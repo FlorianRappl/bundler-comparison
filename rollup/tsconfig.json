@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es6",
+    "moduleResolution": "node",
+    "lib": [
+      "dom",
+      "es2015",
+      "es2016"
+    ],
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "jsx": "react",
+    "baseUrl": "."
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules/**/*"
+  ]
+}

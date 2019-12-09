@@ -1,0 +1,10 @@
+$spacing: 5px;
+
+.main-content {
+  margin: $spacing 0;
+}
+
+.additional-content {
+  padding: $spacing;
+  border: 1px solid green;
+}

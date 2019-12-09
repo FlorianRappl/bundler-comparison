@@ -1,0 +1,13 @@
+{
+  "name": "bundler-compare-browserify",
+  "version": "1.0.0",
+  "description": "Browserify",
+  "homepage": "https://browserify.org",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["bundler", "comparison", "article"],
+  "author": "Florian Rappl",
+  "license": "MIT"
+}
