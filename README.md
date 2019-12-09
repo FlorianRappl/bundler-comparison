@@ -30,6 +30,42 @@ Our key metrics are:
 - What is the bundle size (minimum for the side-bundle, full for the main bundle)
 - How many changes to our original source code (available in `src` have been necessary)
 
+## Browserify
+
+### Installation
+
+### Setup
+
+### Modifications
+
+### Running
+
+### Results
+
+## Brunch
+
+### Installation
+
+### Setup
+
+### Modifications
+
+### Running
+
+### Results
+
+## FuseBox
+
+### Installation
+
+### Setup
+
+### Modifications
+
+### Running
+
+### Results
+
 ## Parcel
 
 ### Installation
@@ -66,7 +102,7 @@ parcel build src/index.html
 
 ### Results
 
-The initial build took about 7s and resultd in a 132 kB bundle.
+The initial build took about 7s and resulted in a 132 kB bundle.
 
 ```plain
 ✨  Built in 5.84s.
@@ -110,55 +146,139 @@ sys     0m1.766s
 
 ### Installation
 
-The installation only requires a single package.
+The installation requires 8 packages.
 
 ```sh
-npm i rollup rollup-plugin-typescript2 rollup-plugin-sass @rollup/plugin-html @rollup/plugin-image @rollup/plugin-node-resolve rollup-plugin-commonjs rollup-plugin-terser --save-dev
+npm i rollup rollup-plugin-typescript2 rollup-plugin-scss @rollup/plugin-html @rollup/plugin-image @rollup/plugin-node-resolve rollup-plugin-commonjs rollup-plugin-terser --save-dev
 ```
 
-This results in about 3 new packages.
+This results in about 229 new packages.
 
 ```plain
++ rollup-plugin-commonjs@10.1.0
++ rollup-plugin-terser@5.1.2
++ rollup-plugin-scss@1.0.2
 + rollup@1.27.9
-added 3 packages from 4 contributors and audited 55 packages in 2.679s
++ rollup-plugin-typescript2@0.25.3
++ @rollup/plugin-node-resolve@6.0.0
++ @rollup/plugin-image@2.0.0
++ @rollup/plugin-html@0.1.0
+added 229 packages from 161 contributors and audited 657 packages in 13.473s
 found 0 vulnerabilities
 ```
 
 ### Setup
 
-Nothing had to be changed. Everything could run immediately without any configuration.
+We had to write about a 50 LOC configuration file.
+
+```js
+import typescript from 'rollup-plugin-typescript2';
+import scss from 'rollup-plugin-scss';
+import image from '@rollup/plugin-image';
+import html from '@rollup/plugin-html';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
+import { terser } from 'rollup-plugin-terser';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+const content = readFileSync(resolve(__dirname, 'src/index.html'), 'utf8');
+const cssName = 'main.css';
+const dist = 'dist';
+
+export default {
+  input: [resolve(__dirname, 'src/app.tsx'), resolve(__dirname, 'src/style.scss')],
+  output: {
+    format: 'amd',
+    dir: dist,
+  },
+  plugins: [
+    nodeResolve(),
+    typescript({
+      objectHashIgnoreUnknownHack: true,
+    }),
+    image({
+      dom: true,
+    }),
+    scss({
+      output: `${dist}/${cssName}`,
+    }),
+    commonjs({
+      sourceMap: false,
+      namedExports: { react: ['createElement', 'Component', 'lazy', 'Fragment', 'useState'], 'react-dom': ['render'] },
+    }),
+    terser(),
+    html({
+      fileName: 'index.html',
+      template: ({ files, publicPath }) => {
+        const { js = [{ fileName: 'missing.js' }] } = files;
+        return content
+          .replace(
+            '<link rel="stylesheet" href="style.scss">',
+            `<link rel="stylesheet" href="${publicPath}${cssName}">`,
+          )
+          .replace('<script src="app.tsx"></script>', `<script src="${publicPath}${js[0].fileName}"></script>`);
+      },
+    }),
+  ],
+};
+```
 
 ### Modifications
 
-The original source code was left unchanged.
+We had to add an additional TypeScript declaration file to import standard images:
+
+```ts
+declare module '*.jpg';
+```
+
+Furthermore, we are not allowed the mix the classic `require` with `import`. So we had to change the *app.tsx* file.
+
+```diff
+import * as React from 'react';
+import { render } from 'react-dom';
++import smiley from './smiley.jpg';
+
+const Page = React.lazy(() => import('./Page'));
+
+const App = () => {
+  const [showPage, setShowPage] = React.useState(false);
+
+  return (
+    <>
+      <div className="main-content">
+        <h2>Let's talk about smileys</h2>
+        <p>More about smileys can be found here ...</p>
+        <p>
++          <img src={smiley} alt="A classic smiley" />
+-          <img src={require('./smiley.jpg')} alt="A classic smiley" />
+        </p>
+        <p>
+          <button onClick={() => setShowPage(!showPage)}>Toggle page</button>
+        </p>
+      </div>
+      {showPage && <Page />}
+    </>
+  );
+};
+
+render(<App />, document.querySelector('#app'));
+```
 
 ### Running
 
 Running is done via one command:
 
 ```sh
-parcel build src/index.html
+rollup -c rollup.config.js --environment BUILD:production
 ```
 
 ### Results
 
-The initial build took about 7s and resultd in a 132 kB bundle.
+The initial build took about 7s and resulted in a 132 kB bundle.
 
 ```plain
-✨  Built in 5.84s.
 
-dist/app.9baf3188.js.map        271.5 KB    125ms
-dist/app.9baf3188.js           132.24 KB    5.81s
-dist/smiley.b199c00b.jpg        99.38 KB    666ms
-dist/Page.cb038bbe.js            2.04 KB    1.29s
-dist/Page.cb038bbe.js.map        1.11 KB      5ms
-dist/index.html                    374 B    358ms
-dist/style.cb6d7d54.css.map        304 B      5ms
-dist/style.cb6d7d54.css            130 B    4.95s
-
-real    0m7.293s
-user    0m11.828s
-sys     0m4.563s
 ```
 
 The stylesheet was minified to 130 bytes, the additional bundle came at 2 kB.
@@ -166,20 +286,7 @@ The stylesheet was minified to 130 bytes, the additional bundle came at 2 kB.
 Subsequent builds took about 2s.
 
 ```plain
-✨  Built in 734ms.
 
-dist/app.9baf3188.js.map        271.5 KB    152ms
-dist/app.9baf3188.js           132.24 KB    478ms
-dist/smiley.b199c00b.jpg        99.38 KB     48ms
-dist/Page.cb038bbe.js            2.04 KB     25ms
-dist/Page.cb038bbe.js.map        1.11 KB     14ms
-dist/index.html                    374 B     16ms
-dist/style.cb6d7d54.css.map        304 B     14ms
-dist/style.cb6d7d54.css            130 B     21ms
-
-real    0m2.201s
-user    0m1.359s
-sys     0m1.766s
 ```
 
 ## Webpack
@@ -290,7 +397,7 @@ webpack --mode production
 
 ### Results
 
-The initial build took about 5s and resultd in a 130 kB bundle.
+The initial build took about 5s and resulted in a 130 kB bundle.
 
 ```plain
 Hash: bdd8a76b5baaf9b51608

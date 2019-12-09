@@ -1,5 +1,5 @@
 import typescript from 'rollup-plugin-typescript2';
-import sass from 'rollup-plugin-sass';
+import scss from 'rollup-plugin-scss';
 import image from '@rollup/plugin-image';
 import html from '@rollup/plugin-html';
 import nodeResolve from '@rollup/plugin-node-resolve';
@@ -9,33 +9,42 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 const content = readFileSync(resolve(__dirname, 'src/index.html'), 'utf8');
+const cssName = 'main.css';
+const dist = 'dist';
 
 export default {
-  input: [
-    resolve(__dirname, 'src/app.tsx'),
-    resolve(__dirname, 'src/style.scss'),
-  ],
+  input: [resolve(__dirname, 'src/app.tsx'), resolve(__dirname, 'src/style.scss')],
   output: {
     format: 'amd',
-    dir: 'dist',
+    dir: dist,
   },
   plugins: [
-    typescript(),
-    sass(),
-    image(),
     nodeResolve(),
+    typescript({
+      objectHashIgnoreUnknownHack: true,
+    }),
+    image({
+      dom: true,
+    }),
+    scss({
+      output: `${dist}/${cssName}`,
+    }),
     commonjs({
-      include: 'node_modules/**',
       sourceMap: false,
       namedExports: { react: ['createElement', 'Component', 'lazy', 'Fragment', 'useState'], 'react-dom': ['render'] },
-      ignore: ['conditional-runtime-dependency'],
     }),
     terser(),
     html({
       fileName: 'index.html',
-      template: ({ attributes, bundle, files, publicPath }) => content
-        .replace('<link rel="stylesheet" href="style.scss">', `<link rel="stylesheet" href="${publicPath}${bundle.css}">`)
-        .replace('<script src="app.tsx"></script>', `<script src="${publicPath}${bundle.js}"></script>`),
-    })
+      template: ({ files, publicPath }) => {
+        const { js = [{ fileName: 'missing.js' }] } = files;
+        return content
+          .replace(
+            '<link rel="stylesheet" href="style.scss">',
+            `<link rel="stylesheet" href="${publicPath}${cssName}">`,
+          )
+          .replace('<script src="app.tsx"></script>', `<script src="${publicPath}${js[0].fileName}"></script>`);
+      },
+    }),
   ],
 };

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { render } from 'react-dom';
+import smiley from './smiley.jpg';
 
 const Page = React.lazy(() => import('./Page'));
 
@@ -12,7 +13,7 @@ const App = () => {
         <h2>Let's talk about smileys</h2>
         <p>More about smileys can be found here ...</p>
         <p>
-          <img src={require('./smiley.jpg')} alt="A classic smiley" />
+          <img src={smiley} alt="A classic smiley" />
         </p>
         <p>
           <button onClick={() => setShowPage(!showPage)}>Toggle page</button>
