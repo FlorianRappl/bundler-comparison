@@ -50,8 +50,10 @@ Now before going into details, these are the results.
 | Speed / 1\. Run\[s\]          | 5         | 7        | 7         | 7          | 5       | 6       |
 | Speed / Subsequent Runs \[s\] | 4         | 2        | 2         | 7          | 4       | 6       |
 | Required Changes              | 2         | 0        | 3         | 3          | 3       | 4       |
-| Difficulty                    | Mittel    | Einfach  | Schwer    | Mittel     | Mittel  | Mittel  |
-| Flexibility                   | Hoch      | Mittel   | Mittel    | Hoch       | Mittel  | Gering  |
+| Difficulty                    | Average   | Simple   | Difficult | Average    | Average | Average |
+| Flexibility                   | High      | Average  | Average   | High       | Mid     | Low     |
+
+**Summary**: Depending on what you want to do there is a bundler for your choice.
 
 ## Browserify
 
