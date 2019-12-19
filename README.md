@@ -46,7 +46,7 @@ Now before going into details, these are the results.
 | Packages Installed            | 457       | 743      | 229       | 272        | 505     | 404     |
 | Configuration Size \[LoC\]    | 40        | 0        | 50        | 56         | 23      | 14      |
 | Bundle Size \[kB\]            | 130       | 132      | 132       | 130        | 132     | 138     |
-| Bundle Splitting              | Ja        | Ja       | Ja        | Nein       | Ja      | Nein    |
+| Bundle Splitting              | Yes       | Yes      | Yes       | No         | Yes     | No      |
 | Speed / 1\. Run\[s\]          | 5         | 7        | 7         | 7          | 5       | 6       |
 | Speed / Subsequent Runs \[s\] | 4         | 2        | 2         | 7          | 4       | 6       |
 | Required Changes              | 2         | 0        | 3         | 3          | 3       | 4       |
