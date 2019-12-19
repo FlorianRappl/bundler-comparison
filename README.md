@@ -53,7 +53,7 @@ Now before going into details, these are the results.
 | Speed / Subsequent Runs \[s\] | 4         | 2        | 2         | 7          | 4          | 6         |
 | Required Changes              | 2         | 0        | 3         | 3          | 3          | 4         |
 | Difficulty                    | Average   | Simple   | Difficult | Average    | Average    | Average   |
-| Flexibility                   | High      | Average  | Average   | High       | Mid        | Low       |
+| Flexibility                   | High      | Average  | Average   | High       | Average    | Low       |
 
 where *) Parcel uses standard configurations of all the tools, e.g., `.babelrc` for Babel, `.browserlist` etc.
 
