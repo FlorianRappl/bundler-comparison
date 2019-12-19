@@ -30,6 +30,29 @@ Our key metrics are:
 - What is the bundle size (minimum for the side-bundle, full for the main bundle)
 - How many changes to our original source code (available in `src` have been necessary)
 
+## Results
+
+Now before going into details, these are the results.
+
+|                               | Webpack   | Parcel   | Rollup    | Browserify | FuseBox | Brunch  |
+|-------------------------------|-----------|----------|-----------|------------|---------|---------|
+| Released                      | 2011      | 2017     | 2014      | 2010       | 2016    | 2011    |
+| Current Version               | 4\.41\.3  | 1\.12\.4 | 1\.27\.13 | 16\.5\.0   | 3\.7\.1 | 3\.0\.0 |
+| GitHub Stars                  | 52300     | 34100    | 17200     | 13000      | 3900    | 6600    |
+| Collaborators                 | 573       | 215      | 200       | 182        | 152     | 122     |
+| Weekly Downloads              | 8,807,158 | 101,988  | 1,005,643 | 675,444    | 9,303   | 11,048  |
+| Open Issues                   | 374       | 810      | 152       | 310        | 54      | 143     |
+| Packages Added                | 9         | 1        | 8         | 3          | 3       | 4       |
+| Packages Installed            | 457       | 743      | 229       | 272        | 505     | 404     |
+| Configuration Size \[LoC\]    | 40        | 0        | 50        | 56         | 23      | 14      |
+| Bundle Size \[kB\]            | 130       | 132      | 132       | 130        | 132     | 138     |
+| Bundle Splitting              | Ja        | Ja       | Ja        | Nein       | Ja      | Nein    |
+| Speed / 1\. Run\[s\]          | 5         | 7        | 7         | 7          | 5       | 6       |
+| Speed / Subsequent Runs \[s\] | 4         | 2        | 2         | 7          | 4       | 6       |
+| Required Changes              | 2         | 0        | 3         | 3          | 3       | 4       |
+| Difficulty                    | Mittel    | Einfach  | Schwer    | Mittel     | Mittel  | Mittel  |
+| Flexibility                   | Hoch      | Mittel   | Mittel    | Hoch       | Mittel  | Gering  |
+
 ## Browserify
 
 ### Installation
@@ -343,7 +366,8 @@ The HTML template was slightly changed.
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <title>Bundler Comparison</title>
-<link rel="stylesheet" href="style.css">
+-<link rel="stylesheet" href="style.scss">
++<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <h1>Test Page</h1>
