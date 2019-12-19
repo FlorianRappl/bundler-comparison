@@ -34,13 +34,139 @@ Our key metrics are:
 
 ### Installation
 
+The installation only requires three packages.
+
+```sh
+npm i browserify tsify tinyify --save-dev
+```
+
+This results in about 272 new packages.
+
+```plain
++ browserify@16.5.0
++ tsify@4.0.1
++ tinyify@2.5.2
+added 272 packages from 242 contributors and audited 1888 packages in 39.221s
+found 0 vulnerabilities
+```
+
 ### Setup
+
+We had to write about a 56 LOC configuration file.
+
+```js
+const browserify = require('browserify');
+const tsify = require('tsify');
+const tinyify = require('tinyify');
+const fs = require('fs');
+const path = require('path');
+const sass = require('sass');
+
+const source = path.resolve(__dirname, 'src');
+const target = path.resolve(__dirname, 'dist');
+
+if (!fs.existsSync(target)) {
+  fs.mkdirSync(target);
+}
+
+function compileCss() {
+  const outFile = path.resolve(target, 'style.css');
+
+  sass.render(
+    {
+      file: path.resolve(source, 'style.scss'),
+      outFile,
+      outputStyle: 'compressed',
+    },
+    (err, result) => {
+      if (err) {
+        console.errror(err);
+      } else {
+        fs.writeFile(outFile, result.css, err => err && console.error(err));
+      }
+    },
+  );
+}
+
+function compileJs() {
+  browserify()
+    .add(path.resolve(source, 'app.tsx'))
+    .plugin(tsify, { noImplicitAny: true })
+    .plugin(tinyify, {
+      env: {
+        NODE_ENV: 'production',
+      },
+    })
+    .bundle()
+    .on('error', console.error)
+    .pipe(fs.createWriteStream(path.resolve(target, 'app.js')));
+}
+
+function copyRest() {
+  ['index.html', 'smiley.jpg'].forEach(file => {
+    fs.copyFile(path.resolve(source, file), path.resolve(target, file), err => err && console.error(err));
+  });
+}
+
+compileCss();
+compileJs();
+copyRest();
+```
 
 ### Modifications
 
+Since the HTML file could not be used as any kind of entry we had to already prepare it for the output.
+
+```diff
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Bundler Comparison</title>
+-<link rel="stylesheet" href="style.scss">
++<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Test Page</h1>
+<div id="app"></div>
+-<script src="app.tsx"></script>
++<script src="app.js"></script>
+</body>
+</html>
+```
+
+Additionally, there is right now no package to deal with PNG files. The closest we have is `imgurify`, however, we do not want the image to be base64 encoded in the bundle. We want the image to be standalone (referenced).
+
+```diff
+        <p>
+-          <img src={require('smiley.jpg')} alt="A classic smiley" />
++          <img src="smiley.jpg" alt="A classic smiley" />
+        </p>
+```
+
 ### Running
 
+Running is done via one command:
+
+```sh
+node bundle.js
+```
+
 ### Results
+
+The initial build took about 7s and resulted in a 130 kB bundle.
+
+```plain
+real    0m6.640s
+user    0m8.813s
+sys     0m1.078s
+```
+
+The stylesheet was minified to 83 bytes, the additional bundle was **not created**.
+
+Subsequent runs are exactly the same.
 
 ## Brunch
 
