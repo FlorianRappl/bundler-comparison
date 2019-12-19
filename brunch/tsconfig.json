@@ -1,18 +1,13 @@
 {
   "compilerOptions": {
     "module": "CommonJS",
-    "target": "es6",
+    "target": "es5",
     "moduleResolution": "node",
-    "lib": [
-      "dom",
-      "es2015",
-      "es2016"
-    ],
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
     "skipLibCheck": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noUnusedLocals": true,
     "jsx": "react",
     "baseUrl": "."

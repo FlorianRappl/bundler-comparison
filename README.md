@@ -172,13 +172,108 @@ Subsequent runs are exactly the same.
 
 ### Installation
 
+The installation only requires four packages.
+
+```sh
+npm i brunch typescript-brunch terser-brunch sass-brunch  --save-dev
+```
+
+This results in about 404 new packages.
+
+```plain
++ sass-brunch@2.10.8
++ typescript-brunch@2.3.0
++ terser-brunch@4.0.0
++ brunch@3.0.0
+added 404 packages from 260 contributors and audited 1661 packages in 57.415s
+found 2 low severity vulnerabilities
+```
+
 ### Setup
+
+We had to write about a 14 LOC configuration file.
+
+```js
+module.exports = {
+  paths: {
+    public: 'dist',
+    watched: ['src'],
+  },
+  files: {
+    javascripts: {
+      joinTo: 'app.js',
+    },
+    stylesheets: {
+      joinTo: 'style.css',
+    },
+  },
+};
+```
 
 ### Modifications
 
+We had to remove the lazy loading as `import` function calls are not supported (not even to "hard-wire" the content).
+
+Furthermore, `require` calls are not picked up. So we can spare this kind of sharade and just reference the file.
+
+```diff
+import * as React from 'react';
+import { render } from 'react-dom';
++import Page from './Page';
+
+-const Page = React.lazy(() => import('./Page'));
+
+const App = () => {
+  const [showPage, setShowPage] = React.useState(false);
+
+  return (
+    <React.Suspense fallback={<b>Loading ...</b>}>
+      <div className="main-content">
+        <h2>Let's talk about smileys</h2>
+        <p>More about smileys can be found here ...</p>
+        <p>
+-          <img src={require('./smiley.jpg')} alt="A classic smiley" />
++          <img src="./smiley.jpg" alt="A classic smiley" />
+        </p>
+        <p>
+          <button onClick={() => setShowPage(!showPage)}>Toggle page</button>
+        </p>
+      </div>
+      {showPage && <Page />}
+    </React.Suspense>
+  );
+};
+
+render(<App />, document.querySelector('#app'));
+```
+
+The "static" files `index.html` and `smiley.jpg` had to be moved into a subfolder called "assets", which was automatically used for copying static files into the target.
+
 ### Running
 
+Running is done via one command:
+
+```sh
+brunch build --production
+```
+
 ### Results
+
+The initial build took about 6s and resulted in a 138 kB bundle.
+
+```plain
+
+11:33:43 - info: compiling
+11:33:43 - info: compiled 16 files into 2 files, copied index.html in 5.2 sec
+
+real    0m5.837s
+user    0m6.859s
+sys     0m1.000s
+```
+
+The stylesheet was minified to 84 bytes, the additional bundle was **not created**.
+
+Subsequent runs are exactly the same.
 
 ## FuseBox
 
@@ -198,7 +293,6 @@ This results in about 505 new packages.
 + fuse-box@3.7.1
 added 505 packages from 351 contributors and audited 2018 packages in 42.65s
 found 1 low severity vulnerability
-  run `npm audit fix` to fix them, or `npm audit` for details
 ```
 
 ### Setup
