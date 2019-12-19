@@ -34,24 +34,28 @@ Our key metrics are:
 
 Now before going into details, these are the results.
 
-|                               | Webpack   | Parcel   | Rollup    | Browserify | FuseBox | Brunch  |
-|-------------------------------|-----------|----------|-----------|------------|---------|---------|
-| Released                      | 2011      | 2017     | 2014      | 2010       | 2016    | 2011    |
-| Current Version               | 4\.41\.3  | 1\.12\.4 | 1\.27\.13 | 16\.5\.0   | 3\.7\.1 | 3\.0\.0 |
-| GitHub Stars                  | 52,300    | 34,100   | 17,200    | 13,000     | 3,900   | 6,600   |
-| Collaborators                 | 573       | 215      | 200       | 182        | 152     | 122     |
-| Weekly Downloads              | 8,807,158 | 101,988  | 1,005,643 | 675,444    | 9,303   | 11,048  |
-| Open Issues                   | 374       | 810      | 152       | 310        | 54      | 143     |
-| Packages Added                | 9         | 1        | 8         | 3          | 3       | 4       |
-| Packages Installed            | 457       | 743      | 229       | 272        | 505     | 404     |
-| Configuration Size \[LoC\]    | 40        | 0        | 50        | 56         | 23      | 14      |
-| Bundle Size \[kB\]            | 130       | 132      | 132       | 130        | 132     | 138     |
-| Bundle Splitting              | Yes       | Yes      | Yes       | No         | Yes     | No      |
-| Speed / 1\. Run\[s\]          | 5         | 7        | 7         | 7          | 5       | 6       |
-| Speed / Subsequent Runs \[s\] | 4         | 2        | 2         | 7          | 4       | 6       |
-| Required Changes              | 2         | 0        | 3         | 3          | 3       | 4       |
-| Difficulty                    | Average   | Simple   | Difficult | Average    | Average | Average |
-| Flexibility                   | High      | Average  | Average   | High       | Mid     | Low     |
+|                               | Webpack   | Parcel   | Rollup    | Browserify | FuseBox    | Brunch    |
+|-------------------------------|-----------|----------|-----------|------------|------------|-----------|
+| Released                      | 2011      | 2017     | 2014      | 2010       | 2016       | 2011      |
+| Current Version               | 4\.41\.3  | 1\.12\.4 | 1\.27\.13 | 16\.5\.0   | 3\.7\.1    | 3\.0\.0   |
+| GitHub Stars                  | 52,300    | 34,100   | 17,200    | 13,000     | 3,900      | 6,600     |
+| Collaborators                 | 573       | 215      | 200       | 182        | 152        | 122       |
+| Configuration                 | JS Module | Custom*  | JS Module | JS Script  | JS Script  | JS Module |
+| CLI Tooling                   | Separate  | Yes      | Yes       | Yes        | No         | Yes       |
+| Weekly Downloads              | 8,807,158 | 101,988  | 1,005,643 | 675,444    | 9,303      | 11,048    |
+| Open Issues                   | 374       | 810      | 152       | 310        | 54         | 143       |
+| Packages Added                | 9         | 1        | 8         | 3          | 3          | 4         |
+| Packages Installed            | 457       | 743      | 229       | 272        | 505        | 404       |
+| Configuration Size \[LoC\]    | 40        | 0        | 50        | 56         | 23         | 14        |
+| Bundle Size \[kB\]            | 130       | 132      | 132       | 130        | 132        | 138       |
+| Bundle Splitting              | Yes       | Yes      | Yes       | No         | Yes        | No        |
+| Speed / 1\. Run\[s\]          | 5         | 7        | 7         | 7          | 5          | 6         |
+| Speed / Subsequent Runs \[s\] | 4         | 2        | 2         | 7          | 4          | 6         |
+| Required Changes              | 2         | 0        | 3         | 3          | 3          | 4         |
+| Difficulty                    | Average   | Simple   | Difficult | Average    | Average    | Average   |
+| Flexibility                   | High      | Average  | Average   | High       | Mid        | Low       |
+
+where *) Parcel uses standard configurations of all the tools, e.g., `.babelrc` for Babel, `.browserlist` etc.
 
 **Summary**: Depending on what you want to do there is a bundler for your choice.
 
