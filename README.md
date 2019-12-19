@@ -58,13 +58,225 @@ Our key metrics are:
 
 ### Installation
 
+The installation only requires three packages.
+
+```sh
+npm i fuse-box node-sass terser --save-dev
+```
+
+This results in about 505 new packages.
+
+```plain
++ node-sass@4.13.0
++ terser@4.4.3
++ fuse-box@3.7.1
+added 505 packages from 351 contributors and audited 2018 packages in 42.65s
+found 1 low severity vulnerability
+  run `npm audit fix` to fix them, or `npm audit` for details
+```
+
 ### Setup
+
+We had to write about a 23 LOC configuration file.
+
+```js
+const { FuseBox, SassPlugin, CSSPlugin, WebIndexPlugin, QuantumPlugin, CopyPlugin } = require('fuse-box');
+
+const fuse = FuseBox.init({
+  homeDir: 'src',
+  target: 'browser',
+  output: 'dist/$name.js',
+  plugins: [
+    WebIndexPlugin({ template: 'src/index.html' }),
+    [SassPlugin(), CSSPlugin({ outFile: _ => 'dist/style.css' })],
+    CopyPlugin({ files: ['*.jpg'], dest: '' }),
+    QuantumPlugin({
+      css: true,
+      bakeApiIntoBundle: true,
+      uglify: true,
+    }),
+  ],
+});
+
+fuse
+  .bundle('app')
+  .instructions(' > app.tsx');
+
+fuse.run();
+```
 
 ### Modifications
 
+We had to reference the SASS file in the beginning for our application.
+
+```tsx
+import './style.scss';
+```
+
+The HTML template was slightly changed.
+
+```diff
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Bundler Comparison</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Test Page</h1>
+<div id="app"></div>
+-<script src="./app.tsx"></script>
++$bundles
+</body>
+</html>
+```
+
+The HTML template had to be referenced in the Fuse loader script.
+
 ### Running
 
+Running is done via one command:
+
+```sh
+node fuse.js
+```
+
 ### Results
+
+The initial build took about 5s and resulted in a 132 kB bundle.
+
+```plain
+--- FuseBox 3.7.1 ---
+  → Typescript config file:  /tsconfig.json
+  → Applying automatic alias based on baseUrl in tsconfig.json
+  → 
+        Page => "~/Page"
+        app => "~/app"
+  → Typescript script target: ES2015
+
+--------------------------
+Bundle "app" 
+
+    Page.jsx
+    app.jsx
+    smiley.jpg
+    style.scss
+└──  (4 files,  2 kB) default
+└── fuse-box-css 1.3 kB (1 files)
+└── object-assign 2.2 kB (1 files)
+└── process 3.3 kB (1 files)
+└── prop-types 4.4 kB (2 files)
+└── react-dom 1 MB (3 files)
+└── react 79.9 kB (3 files)
+└── scheduler 43.3 kB (6 files)
+size: 1.2 MB in 1s 189ms
+
+  -------------- 
+
+Launching quantum core
+  → Generating abstraction, this may take a while
+  → Abstraction generated
+  → Process bundle app
+  → Process package default 
+  →   Files: 4 
+  → Process package fuse-box-css 
+  →   Files: 1 
+  → Process package object-assign 
+  →   Files: 1 
+  → Process package process 
+  →   Files: 1 
+  → Process package prop-types 
+  →   Files: 2 
+  → Process package react-dom 
+  →   Files: 3 
+  → Process package react 
+  →   Files: 3 
+  → Process package scheduler 
+  →   Files: 6 
+  → Create split bundle 9d21301d with entry point default/Page.jsx
+  → QuantumBit: Adding default/Page.jsx to 9d21301d
+  → Render bundle app
+  → Render bundle 9d21301d
+  → Uglifying app...
+  → Using terser because the target is greater than ES5 or es6 option is set
+  → Done uglifying app
+  size:  129.3 kB, 41.2 kB (gzipped)
+  → Uglifying 9d21301d...
+  → Using terser because the target is greater than ES5 or es6 option is set
+  → Done uglifying 9d21301d
+  size:  1.6 kB, 844 Bytes (gzipped)
+
+real    0m5.409s
+user    0m5.422s
+sys     0m1.172s
+```
+
+The stylesheet was *not* minified and remained at 142 bytes, the additional bundle came at 1604 bytes.
+
+Subsequent builds seem to be slightly faster with 4s.
+
+```plain
+--- FuseBox 3.7.1 ---
+
+--------------------------
+Bundle "app" 
+
+    Page.jsx
+    app.jsx
+    smiley.jpg
+    style.scss
+└──  (4 files,  2 kB) default
+└── fuse-box-css@0.0.1 1.3 kB (0 files)
+└── object-assign@4.1.1 2.2 kB (0 files)
+└── process@0.0.0 3.3 kB (0 files)
+└── prop-types@15.7.2 4.4 kB (0 files)
+└── react-dom@16.12.0 1 MB (0 files)
+└── react@16.12.0 79.9 kB (0 files)
+└── scheduler@0.18.0 43.3 kB (0 files)
+size: 1.2 MB in 117ms
+
+  -------------- 
+
+Launching quantum core
+  → Generating abstraction, this may take a while
+  → Abstraction generated
+  → Process bundle app
+  → Process package default 
+  →   Files: 4 
+  → Process package fuse-box-css 
+  →   Files: 1 
+  → Process package object-assign 
+  →   Files: 1 
+  → Process package process 
+  →   Files: 1 
+  → Process package prop-types 
+  →   Files: 2 
+  → Process package react-dom 
+  →   Files: 3 
+  → Process package react 
+  →   Files: 3 
+  → Process package scheduler 
+  →   Files: 6 
+  → Create split bundle 9d21301d with entry point default/Page.jsx
+  → QuantumBit: Adding default/Page.jsx to 9d21301d
+  → Render bundle app
+  → Render bundle 9d21301d
+  → Uglifying app...
+  → Using terser because the target is greater than ES5 or es6 option is set
+  → Done uglifying app
+  size:  129.3 kB, 41.2 kB (gzipped)
+  → Uglifying 9d21301d...
+  → Using terser because the target is greater than ES5 or es6 option is set
+  → Done uglifying 9d21301d
+  size:  1.6 kB, 844 Bytes (gzipped)
+
+real    0m4.350s
+user    0m4.469s
+sys     0m1.141s
+```
 
 ## Parcel
 
